@@ -16,14 +16,7 @@ BASE_URL = "https://sisregiii.saude.gov.br"
 START_URL = f"{BASE_URL}/cgi-bin/index#"
 HTML_FILE = "verificacao_residencia.html"
 
-
-def _safe_log(log: Callable[[str], None], msg: str) -> None:
-    try:
-        if callable(log):
-            log(str(msg))
-    except Exception:
-        pass
-
+from .log import _safe_log
 
 class SisregResidenciaVerifier:
     def __init__(self, log: Callable[[str], None], timeout: int = 30):
@@ -660,13 +653,3 @@ function exportToCSV(){
             self.log,
             f"HTML atualizado: {total} fichas (✓ {coerentes} | ✗ {incoerentes} | ? {nao_encontrados} | ! {erros})",
         )
-
-
-def run_verificacao_residencia(
-    dt_inicio: str,
-    dt_fim: str,
-    usuario_sisreg: str,
-    senha_sisreg: str,
-    log: Callable[[str], None] = lambda s: None,
-) -> Tuple[bool, str]:
-    return SisregResidenciaVerifier(log=log).run(dt_inicio, dt_fim, usuario_sisreg, senha_sisreg)
