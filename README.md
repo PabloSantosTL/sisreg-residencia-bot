@@ -4,13 +4,10 @@
 
 # Verificação de Residência – SISREG
 
-Aplicação em Python para verificação automatizada de inconsistências de residência no SISREG, com interface gráfica em PySide6 e automação via Selenium.
+Aplicação em Python para verificação automatizada de inconsistências de residência no SISREG, com interface gráfica em PySide6 e automação direta com a API do SISREG.
 
 ## Requisitos
 - Python 3.10+
-- Google Chrome
-- ChromeDriver compatível
-- Selenium
 - PySide6
 
 ## Como rodar
