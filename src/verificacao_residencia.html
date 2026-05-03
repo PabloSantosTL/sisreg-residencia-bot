@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Verificação de Residência - TRES LAGOAS</title>
+<style>
+ body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+ h1 { color: #333; text-align: center; }
+ .stats { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+ .stat-item { display: inline-block; margin-right: 30px; font-size: 16px; }
+ .stat-number { font-weight: bold; font-size: 24px; display: block; }
+ table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+         border-radius: 8px; overflow: hidden; }
+ th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+ th { background-color: #2c3e50; color: white; font-weight: 600; cursor: pointer; position: relative; }
+ th:hover { background-color: #34495e; }
+ tr:hover { background-color: #f8f9fa; }
+ .coerente { color: #27ae60; font-weight: bold; }
+ .incoerente { color: #e74c3c; font-weight: bold; }
+ .nao-encontrado { color: #f39c12; font-weight: bold; }
+ .erro { color: #7f8c8d; font-weight: bold; }
+ #search { padding: 12px 15px; width: 100%; margin-bottom: 20px; border: 2px solid #ddd;
+           border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+ #search:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+ .last-update { text-align: right; color: #7f8c8d; font-size: 14px; margin-top: 10px; }
+</style>
+<script>
+function searchTable() {
+  var input = document.getElementById("search");
+  var filter = input.value.toUpperCase();
+  var table = document.getElementById("resultsTable");
+  var tr = table.getElementsByTagName("tr");
+  for (var i = 1; i < tr.length; i++) {
+    var tds = tr[i].getElementsByTagName("td");
+    var show = false;
+    for (var j = 0; j < tds.length; j++) {
+      if (tds[j].innerHTML.toUpperCase().indexOf(filter) > -1) { show = true; break; }
+    }
+    tr[i].style.display = show ? "" : "none";
+  }
+}
+function sortTable(n) {
+  var table = document.getElementById("resultsTable");
+  var rows = Array.from(table.rows).slice(1);
+  var isAsc = table.getAttribute("data-sort-dir") === "asc";
+  var sortCol = parseInt(table.getAttribute("data-sort-col"));
+  if (sortCol >= 0) {
+    var prevTh = table.rows[0].cells[sortCol];
+    prevTh.innerHTML = prevTh.innerHTML.replace(' ▲','').replace(' ▼','');
+  }
+  rows.sort(function(a,b){
+    var x = a.cells[n].innerText;
+    var y = b.cells[n].innerText;
+    if (n === 1) {
+      var numX = parseInt(x.replace(/[^0-9]/g,'')); var numY = parseInt(y.replace(/[^0-9]/g,''));
+      if (!isNaN(numX) && !isNaN(numY)) return isAsc ? numX-numY : numY-numX;
+    }
+    if (n === 4) {
+      var dx = parseDate(x); var dy = parseDate(y);
+      if (dx && dy) return isAsc ? dx-dy : dy-dx;
+    }
+    return isAsc ? x.localeCompare(y) : y.localeCompare(x);
+  });
+  rows.forEach(function(row){ table.tBodies[0].appendChild(row); });
+  var th = table.rows[0].cells[n];
+  th.innerHTML = th.innerHTML + (isAsc ? ' ▼' : ' ▲');
+  table.setAttribute("data-sort-col", n);
+  table.setAttribute("data-sort-dir", isAsc ? "desc" : "asc");
+}
+function parseDate(dateStr){
+  var parts = dateStr.split(/[\/ :]/);
+  if (parts.length >= 5) return new Date(parts[2], parts[1]-1, parts[0], parts[3], parts[4]).getTime();
+  return null;
+}
+function exportToCSV(){
+  var table = document.getElementById("resultsTable");
+  var rows = table.getElementsByTagName("tr");
+  var csv = [];
+  for (var i=0;i<rows.length;i++){
+    var row=[], cols=rows[i].querySelectorAll("td, th");
+    for (var j=0;j<cols.length;j++){
+      row.push('"' + cols[j].innerText.replace(/"/g,'""') + '"');
+    }
+    csv.push(row.join(","));
+  }
+  var csvString = csv.join("\n");
+  var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  var link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = 'verificacao_residencia.csv';
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script>
+</head>
+<body>
+<h1>Verificação de Residência - TRES LAGOAS</h1>
+<div class="stats">
+  <div class="stat-item"><span class="stat-number" id="totalCount">0</span>Total verificadas</div>
+  <div class="stat-item"><span class="stat-number" id="coerenteCount" style="color:#27ae60">0</span>Coerentes</div>
+  <div class="stat-item"><span class="stat-number" id="incoerenteCount" style="color:#e74c3c">0</span>Incoerentes</div>
+  <div class="stat-item"><span class="stat-number" id="naoEncontradoCount" style="color:#f39c12">0</span>Não encontrados</div>
+  <button onclick="exportToCSV()" style="float:right;background:white;color:#2c3e50;border:none;
+          padding:8px 15px;border-radius:4px;cursor:pointer;font-weight:bold;">Exportar CSV</button>
+</div>
+<input type="text" id="search" onkeyup="searchTable()" placeholder="Buscar por nome, código, município ou status...">
+<table id="resultsTable" data-sort-col="-1" data-sort-dir="asc">
+<thead>
+<tr>
+  <th onclick="sortTable(0)">Nome do Paciente</th>
+  <th onclick="sortTable(1)">Código</th>
+  <th onclick="sortTable(2)">Status</th>
+  <th onclick="sortTable(3)">Município Residência</th>
+  <th onclick="sortTable(4)">Data/Hora Verificação</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<div class="last-update">
+  Última atualização: 02/05/2026 23:06:56
+</div>
+</body>
+</html>

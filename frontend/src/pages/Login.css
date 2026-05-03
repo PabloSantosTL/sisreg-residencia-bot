@@ -1,0 +1,123 @@
+/* Fundo simulando o gradiente diagonal verde claro e branco */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom right, #e6fcf5, #ffffff);
+    font-family: sans-serif;
+    padding: 1rem;
+  }
+  
+  /* Container principal (estreito como na imagem) */
+  .login-container {
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Logo Header */
+  .logo-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    color: #32b38a;
+  }
+  
+  /* Círculo simulando o ícone do logo */
+  .logo-circle {
+    width: 3rem;
+    height: 3rem;
+    background-color: #32b38a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .logo-text {
+    font-size: 1.875rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  
+  /* Título */
+  .title-wrapper {
+    width: 100%;
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  
+  .login-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #0f5945;
+    margin: 0;
+  }
+  
+  /* Formulário e Espaçamentos */
+  .login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  /* Labels e Inputs */
+  .input-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #9ca3af;
+    display: block;
+  }
+  
+  .login-input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    border-radius: 0.125rem;
+    padding: 0.875rem;
+    color: #1f2937;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box; /* Garante que o padding não quebre a largura */
+    outline: none;
+  }
+  
+  .login-input:focus {
+    border-color: #32b38a;
+    box-shadow: 0 0 0 1px #32b38a;
+  }
+  
+  /* Botão */
+  .btn-wrapper {
+    padding-top: 0.5rem;
+  }
+  
+  .login-button {
+    width: 100%;
+    background-color: #32b38a;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.025em;
+    padding: 0.875rem 0;
+    border-radius: 0.125rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .login-button:hover {
+    background-color: #289670;
+  }
