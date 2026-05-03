@@ -1,16 +1,43 @@
 import React, { useState } from 'react';
-import './Login.css'; // Importando o nosso arquivo de estilos separado
+import './Login.css'; 
+import logoPet from '../assets/logo-pet.jpeg'; 
 
 export default function LoginRegulacao() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Tentando logar com:', { username, password });
-    // Integração com o backend Python
-  };
+    console.log('Enviando dados para o backend...');
 
+    try {
+      // Aqui você coloca o endereço e a rota exata do seu backend Python
+      const resposta = await fetch('http://localhost:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Transforma o usuário e senha em um formato que o Python entende (JSON)
+        body: JSON.stringify({ 
+          usuario: username, 
+          senha: password 
+        })
+      });
+
+      if (resposta.ok) {
+        const dados = await resposta.json();
+        console.log('Login com sucesso!', dados);
+        // Deu certo! Aqui nós vamos redirecionar o médico para o Dashboard depois
+        alert('Login autorizado pelo Python!'); 
+      } else {
+        // O backend retornou erro (ex: 401 Unauthorized)
+        alert('Usuário ou senha incorretos no SISREG!');
+      }
+    } catch (erro) {
+      console.error('Erro de conexão:', erro);
+      alert('O backend Python parece estar desligado.');
+    }
+  };
   return (
     <div className="login-wrapper">
       <div className="login-container">
@@ -18,9 +45,7 @@ export default function LoginRegulacao() {
         {/* Logo e Título do Sistema */}
         <div className="logo-header">
           <div className="logo-circle">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-            </svg>
+            <img src={logoPet} alt="Logo PET-Saúde" className="logo-img" />   
           </div>
           <span className="logo-text">Regulação</span>
         </div>
